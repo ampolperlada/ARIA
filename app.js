@@ -80,8 +80,86 @@ function createProgressBar(current, max, width = 20) {
   return `${bar} ${Math.floor(percentage)}%`;
 }
 
-// Detect skills from note content
-function detectSkills(content) {
+// Ask Ollama AI
+async function askAI(prompt) {
+  try {
+    const response = await fetch(OLLAMA_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        prompt: prompt,
+        stream: false
+      })
+    });
+    
+    const data = await response.json();
+    return data.response;
+  } catch (error) {
+    return `❌ Error: ${error.message}. Is Ollama running?`;
+  }
+}
+
+// ============================================================================
+// OPTION A: SMART AI SKILL DETECTION
+// ============================================================================
+
+// Detect skills from note content using AI
+async function detectSkillsWithAI(content) {
+  console.log('🤖 ARIA is analyzing your note to detect skills...\n');
+  
+  const prompt = `You are a skill detection assistant. Read this learning note and identify which skills the person practiced or learned about.
+
+Learning Note: "${content}"
+
+Available Skills:
+- python: Python programming, pandas, numpy, data analysis, scripting
+- math: Mathematics, statistics, linear algebra, probability, calculus
+- llm: Large Language Models, GPT, Ollama, prompts, AI models
+- rag: Retrieval Augmented Generation, embeddings, vector search, document Q&A
+- n8n: Workflow automation, n8n tool, zapier, integrations
+- javascript: JavaScript, Node.js, async/await, ES6+, npm
+- vectordb: Vector databases, Pinecone, Chroma, Weaviate, similarity search
+- api: REST APIs, endpoints, fetch, HTTP requests, webhooks
+
+Instructions:
+1. Analyze what the person learned or practiced
+2. Return ONLY the skill IDs (separated by commas) that match
+3. If multiple skills apply, list all of them
+4. If no skills clearly match, return "none"
+5. Do NOT include explanations, just the skill IDs
+
+Example responses:
+- "python,api" (if they learned Python and APIs)
+- "llm,rag" (if they learned about LLMs and RAG)
+- "none" (if no clear skills match)
+
+Your response:`;
+
+  try {
+    const aiResponse = await askAI(prompt);
+    const skillIds = aiResponse.trim().toLowerCase().split(',').map(s => s.trim());
+    
+    // Filter valid skills and create detection objects
+    const validSkills = ['python', 'math', 'llm', 'rag', 'n8n', 'javascript', 'vectordb', 'api'];
+    const detected = [];
+    
+    for (const skillId of skillIds) {
+      if (validSkills.includes(skillId)) {
+        detected.push({ skill: skillId, xp: 10 });
+      }
+    }
+    
+    return detected;
+  } catch (error) {
+    console.log('⚠️  AI detection failed, using fallback keyword matching...\n');
+    // Fallback to simple keyword matching if AI fails
+    return detectSkillsFallback(content);
+  }
+}
+
+// Fallback keyword detection (if AI fails)
+function detectSkillsFallback(content) {
   const detected = [];
   const lower = content.toLowerCase();
   
@@ -111,26 +189,6 @@ function detectSkills(content) {
   }
   
   return detected;
-}
-
-// Ask Ollama AI
-async function askAI(prompt) {
-  try {
-    const response = await fetch(OLLAMA_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: MODEL,
-        prompt: prompt,
-        stream: false
-      })
-    });
-    
-    const data = await response.json();
-    return data.response;
-  } catch (error) {
-    return `❌ Error: ${error.message}. Is Ollama running?`;
-  }
 }
 
 // Prompt user for input
@@ -254,7 +312,7 @@ async function showMenu() {
 // FEATURE FUNCTIONS
 // ============================================================================
 
-// [1] Add a note
+// [1] Add a note (WITH OPTION A: SMART AI DETECTION)
 async function addNote() {
   clearScreen();
   drawBox('📝 ADD A NOTE');
@@ -280,8 +338,8 @@ async function addNote() {
   
   console.log('\n✅ Note saved successfully!\n');
   
-  // Auto-detect skills and add XP
-  const detectedSkills = detectSkills(content);
+  // OPTION A: Use AI-powered skill detection
+  const detectedSkills = await detectSkillsWithAI(content);
   
   if (detectedSkills.length > 0) {
     console.log('🎯 Skills detected! Adding XP...\n');
@@ -299,6 +357,8 @@ async function addNote() {
     
     await saveSkills(skills);
     console.log('');
+  } else {
+    console.log('ℹ️  No specific skills detected in this note.\n');
   }
   
   await prompt('Press Enter to continue...');
@@ -430,7 +490,7 @@ async function searchNotes() {
     return;
   }
   
-  console.log('\n🤖 AI is thinking...\n');
+  console.log('\n🤖 ARIA is thinking...\n');
   
   const allNotes = notes.map(n => `- ${n.content}`).join('\n');
   
@@ -443,7 +503,7 @@ Please answer based ONLY on the notes above. If the answer isn't in the notes, s
 
   const answer = await askAI(prompt_text);
   
-  console.log('💡 AI Answer:\n');
+  console.log('💡 ARIA\'s Answer:\n');
   console.log(answer);
   console.log('\n');
   
@@ -464,7 +524,7 @@ async function getSummary() {
     return;
   }
   
-  console.log('🤖 AI is generating summary...\n');
+  console.log('🤖 ARIA is generating summary...\n');
   
   const allNotes = notes.map(n => `- ${n.content}`).join('\n');
   
@@ -485,7 +545,7 @@ Please give me a brief summary of what I've been learning. Group by topics if po
 // [5] Chat with AI directly
 async function chatWithAI() {
   clearScreen();
-  drawBox('💬 CHAT WITH AI');
+  drawBox('💬 CHAT WITH ARIA');
   console.log('\n');
   console.log('Type your questions. Type "back" to return to menu.\n');
   
@@ -496,11 +556,11 @@ async function chatWithAI() {
       break;
     }
     
-    console.log('\n🤖 AI is thinking...\n');
+    console.log('\n🤖 ARIA is thinking...\n');
     
     const answer = await askAI(question);
     
-    console.log('AI:', answer);
+    console.log('ARIA:', answer);
     console.log('\n');
   }
 }
@@ -607,7 +667,7 @@ async function main() {
         rl.close();
         process.exit(0);
       default:
-        console.log('\n Invalid option! Please choose 0-6.\n');
+        console.log('\n Invalid option! Please choose 0-8.\n');
         await prompt('Press Enter to continue...');
     }
   }
