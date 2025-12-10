@@ -1,0 +1,8 @@
+notepad .gitignore
+```
+
+Put this inside:
+```
+node_modules/
+.env
+```

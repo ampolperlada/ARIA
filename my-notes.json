@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1765292718684,
+    "content": "Today I learned how to use Ollama - a free local LLM!",
+    "date": "2025-12-09T15:05:18.684Z",
+    "tags": []
+  },
+  {
+    "id": 1765292974149,
+    "content": "Learned about RAG - it gives AI memory from documents",
+    "date": "2025-12-09T15:09:34.149Z",
+    "tags": []
+  },
+  {
+    "id": 1765292974267,
+    "content": "Built my first AI script using Node.js and Ollama",
+    "date": "2025-12-09T15:09:34.267Z",
+    "tags": []
+  },
+  {
+    "id": 1765292974382,
+    "content": "Understood the difference between local AI vs cloud API",
+    "date": "2025-12-09T15:09:34.382Z",
+    "tags": []
+  }
+]
