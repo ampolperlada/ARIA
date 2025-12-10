@@ -2,7 +2,7 @@
 # Right-click and "Run with PowerShell"
 
 # Set window title
-$host.UI.RawUI.WindowTitle = "AI Learning Companion"
+$host.UI.RawUI.WindowTitle = "aria"
 
 # Change to script directory
 Set-Location $PSScriptRoot
@@ -11,7 +11,7 @@ Set-Location $PSScriptRoot
 Clear-Host
 
 Write-Host ""
-Write-Host "AI Learning Companion Launcher" -ForegroundColor Cyan
+Write-Host "aria" -ForegroundColor Cyan
 Write-Host "=================================" -ForegroundColor Cyan
 Write-Host ""
 

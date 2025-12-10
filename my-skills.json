@@ -1,7 +1,7 @@
 {
   "python": {
     "name": "🐍 Python",
-    "level": 0,
+    "level": 20,
     "maxLevel": 100,
     "category": "programming"
   },
@@ -13,7 +13,7 @@
   },
   "llm": {
     "name": "🤖 LLM",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "ai"
   },

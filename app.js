@@ -1,5 +1,5 @@
 // app.js
-// Interactive terminal app for your AI Learning Companion
+// Interactive terminal app for your ARIA
 
 // ============================================================================
 // IMPORTS
@@ -158,7 +158,6 @@ function drawBox(text, width = 50) {
 // ============================================================================
 // MAIN MENU FUNCTIONS
 // ============================================================================
-
 async function showMenu() {
   clearScreen();
   
@@ -174,28 +173,79 @@ async function showMenu() {
   const totalLevel = Object.values(skills).reduce((sum, skill) => sum + skill.level, 0);
   const overallProgress = Math.floor((totalLevel / (Object.keys(skills).length * 100)) * 100);
   
-  console.log('\n╔════════════════════════════════════════════╗');
-  console.log('║   🤖 AI LEARNING COMPANION                 ║');
-  console.log('║   Your Offline AI Assistant                ║');
-  console.log('╠════════════════════════════════════════════╣');
-  console.log('║                                            ║');
-  console.log(`║   📊 Stats: ${notes.length} notes | Today: ${todayNotes.length}`.padEnd(45) + '║');
-  console.log(`║   🎯 Overall Progress: ${overallProgress}%`.padEnd(45) + '║');
-  console.log('║                                            ║');
-  console.log('║   What would you like to do?               ║');
-  console.log('║                                            ║');
-  console.log('║   [1] 📝 Add a note                        ║');
-  console.log('║   [2] 📚 View all notes                    ║');
-  console.log('║   [3] 🔍 Search notes with AI              ║');
-  console.log('║   [4] 📊 Get AI summary                    ║');
-  console.log('║   [5] 💬 Chat with AI directly             ║');
-  console.log('║   [6] 🗑️  Delete a note                    ║');
-  console.log('║   [7] 🎯 View skill progress               ║');
-  console.log('║   [8] ⚡ Add skill XP manually             ║');
-  console.log('║   [0] 👋 Exit                              ║');
-  console.log('║                                            ║');
-  console.log('╚════════════════════════════════════════════╝\n');
+  // Top banner ASCII art
+  console.log('\n\n');
+  console.log('                          [=========]');
+  console.log('               -==++""" .  /. . .  \\ .  """++==-');
+  console.log('        -+""   \\   .. . .  | ..  . |  . .  .   /   ""-+');
+  console.log('     /\\  +-""   `-----=====\\  <O>  /=====-----\'   ""-+  /\\');
+  console.log('    / /                      ""=""                      \\ \\');
+  console.log('  / /                                                     \\ \\');
+  console.log(' //                            |                            \\\\');
+  console.log('/")                          \\ | /                          ("\\');
+  console.log('\\o\\                           \\*/                           /o/');
+  console.log(' \\ )                       --**O**--                       ( /');
+  console.log('                              /*\\');
+  console.log('                             / | \\');
+  console.log('                               |');
+  console.log('\n');
   
+  // ASCII art lines (anime character)
+  const asciiArt = [
+    "@@@@@@@@@@@@@@@@@@@@@**^^\"~~~\"^@@^*@*@@**@@@@@@@@@",
+    "@@@@@@@@@@@@@*^^'\"~   , - ' '; ,@@b. '  -e@@@@@@@@@",
+    "@@@@@@@@*^\"~      . '     . ' ,@@@@(  e@*@@@@@@@@@@",
+    "@@@@@^~         .       .   ' @@@@@@, ~^@@@@@@@@@@@",
+    "@@@~ ,e**@@*e,  ,e**e, .    ' '@@@@@@e,  \"*@@@@@'^@",
+    "@',e@@@@@@@@@@ e@@@@@@       ' '*@@@@@@    @@@'   0",
+    "@@@@@@@@@@@@@@@@@@@@@',e,     ;  ~^*^'    ;^~   ' 0",
+    "@@@@@@@@@@@@@@@^\"\"^@@e@@@   .'           ,'   .'  @",
+    "@@@@@@@@@@@@@@'    '@@@@@ '         ,  ,e'  .    ;@",
+    "@@@@@@@@@@@@@' ,&&,  ^@*'     ,  .  i^\"@e, ,e@e  @@",
+    "@@@@@@@@@@@@' ,@@@@,          ;  ,& !,,@@@e@@@@ e@@",
+    "@@@@@,~*@@*' ,@@@@@@e,   ',   e^~^@,   ~'@@@@@@,@@@",
+    "@@@@@@, ~\" ,e@@@@@@@@@*e*@*  ,@e  @@\"\"@e,,@@@@@@@@@",
+    "@@@@@@@@ee@@@@@@@@@@@@@@@\" ,e@' ,e@' e@@@@@@@@@@@@@",
+    "@@@@@@@@@@@@@@@@@@@@@@@@\" ,@\" ,e@@e,,@@@@@@@@@@@@@@",
+    "@@@@@@@@@@@@@@@@@@@@@@@~ ,@@@,,0@@@@@@@@@@@@@@@@@@@",
+    "@@@@@@@@@@@@@@@@@@@@@@@@,,@@@@@@@@@@@@@@@@@@@@@@@@@",
+  ];
+  
+  // Menu lines
+  const menuLines = [
+    '╔════════════════════════════════════════════╗',
+    '║    ARIA - AI Learning Companion            ║',
+    '║   Your Offline AI Assistant                ║',
+    '╠════════════════════════════════════════════╣',
+    '║                                            ║',
+    `║   📊 Stats: ${notes.length} notes | Today: ${todayNotes.length}                      ║`,
+    `║   🎯 Overall Progress: ${overallProgress}%                    ║`,
+    '║                                            ║',
+    '║   What would you like to do?               ║',
+    '║                                            ║',
+    '║   [1]  Add a note                          ║',
+    '║   [2]  View all notes                      ║',
+    '║   [3]  Search notes with AI                ║',
+    '║   [4]  Get AI summary                      ║',
+    '║   [5]  Chat with AI directly               ║',
+    '║   [6]  Delete a note                       ║',
+    '║   [7]  View skill progress                 ║',
+    '║   [8]  Add skill XP manually               ║',
+    '║   [0]  Exit                                ║',
+    '║                                            ║',
+    '╚════════════════════════════════════════════╝'
+  ];
+  
+  // Print menu and ASCII art side by side
+  const maxLines = Math.max(menuLines.length, asciiArt.length);
+  
+  for (let i = 0; i < maxLines; i++) {
+    const menuLine = menuLines[i] || ''.padEnd(46);
+    const artLine = asciiArt[i] || '';
+    console.log(menuLine + '    ' + artLine);
+  }
+  
+  console.log('\n');
   const choice = await prompt('Choose an option (0-8): ');
   return choice.trim();
 }
@@ -506,18 +556,18 @@ async function deleteNote() {
 // ============================================================================
 
 async function main() {
-  console.log('\n🚀 Starting AI Learning Companion...\n');
+  console.log('\n🚀 i am Aria ur Advanced Reasoning & Intelligent Assistant...\n');
   
   // Check if Ollama is running
-  console.log('🔍 Checking Ollama...');
+  console.log('Checking Ollama...');
   const testResponse = await askAI('Say "ready"');
   
   if (testResponse.includes('Error')) {
-    console.log('\n⚠️  Warning: Ollama might not be running!');
+    console.log('\n  Warning: Ollama might not be running!');
     console.log('   Start it with: ollama serve\n');
     await prompt('Press Enter to continue anyway...');
   } else {
-    console.log('✅ Ollama is ready!\n');
+    console.log(' llm is ready\n');
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
   
@@ -552,12 +602,12 @@ async function main() {
         break;
       case '0':
         clearScreen();
-        console.log('\n👋 Thanks for using AI Learning Companion!');
-        console.log('💡 Keep learning and taking notes!\n');
+        console.log('\n Thanks for using ARIA!');
+        console.log(' Keep learning and taking notes!\n');
         rl.close();
         process.exit(0);
       default:
-        console.log('\n❌ Invalid option! Please choose 0-6.\n');
+        console.log('\n Invalid option! Please choose 0-6.\n');
         await prompt('Press Enter to continue...');
     }
   }
