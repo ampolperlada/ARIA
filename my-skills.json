@@ -1,0 +1,50 @@
+{
+  "python": {
+    "name": "🐍 Python",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "programming"
+  },
+  "math": {
+    "name": "📐 Math/Statistics",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "foundation"
+  },
+  "llm": {
+    "name": "🤖 LLM",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "ai"
+  },
+  "rag": {
+    "name": "📚 RAG",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "ai"
+  },
+  "n8n": {
+    "name": "⚙️ n8n/Workflows",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "ai"
+  },
+  "javascript": {
+    "name": "💻 JavaScript/Node.js",
+    "level": 15,
+    "maxLevel": 100,
+    "category": "programming"
+  },
+  "vectordb": {
+    "name": "🗄️ Vector Databases",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "ai"
+  },
+  "api": {
+    "name": "🔌 APIs",
+    "level": 0,
+    "maxLevel": 100,
+    "category": "programming"
+  }
+}
