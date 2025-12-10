@@ -14,8 +14,21 @@ import fetch from 'node-fetch';
 // ============================================================================
 
 const NOTES_FILE = 'my-notes.json';
+const SKILLS_FILE = 'my-skills.json';
 const OLLAMA_URL = 'http://localhost:11434/api/generate';
 const MODEL = 'llama3.2';
+
+// Default skills
+const DEFAULT_SKILLS = {
+  python: { name: '🐍 Python', level: 0, maxLevel: 100, category: 'programming' },
+  math: { name: '📐 Math/Statistics', level: 0, maxLevel: 100, category: 'foundation' },
+  llm: { name: '🤖 LLM', level: 0, maxLevel: 100, category: 'ai' },
+  rag: { name: '📚 RAG', level: 0, maxLevel: 100, category: 'ai' },
+  n8n: { name: '⚙️ n8n/Workflows', level: 0, maxLevel: 100, category: 'ai' },
+  javascript: { name: '💻 JavaScript/Node.js', level: 0, maxLevel: 100, category: 'programming' },
+  vectordb: { name: '🗄️ Vector Databases', level: 0, maxLevel: 100, category: 'ai' },
+  api: { name: '🔌 APIs', level: 0, maxLevel: 100, category: 'programming' }
+};
 
 // Create readline interface for user input
 const rl = readline.createInterface({
@@ -40,6 +53,64 @@ async function loadNotes() {
 // Save notes to file
 async function saveNotes(notes) {
   await fs.writeFile(NOTES_FILE, JSON.stringify(notes, null, 2));
+}
+
+// Load skills from file
+async function loadSkills() {
+  try {
+    const data = await fs.readFile(SKILLS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    await saveSkills(DEFAULT_SKILLS);
+    return DEFAULT_SKILLS;
+  }
+}
+
+// Save skills to file
+async function saveSkills(skills) {
+  await fs.writeFile(SKILLS_FILE, JSON.stringify(skills, null, 2));
+}
+
+// Create progress bar
+function createProgressBar(current, max, width = 20) {
+  const percentage = (current / max) * 100;
+  const filled = Math.floor((current / max) * width);
+  const empty = width - filled;
+  const bar = '█'.repeat(filled) + '░'.repeat(empty);
+  return `${bar} ${Math.floor(percentage)}%`;
+}
+
+// Detect skills from note content
+function detectSkills(content) {
+  const detected = [];
+  const lower = content.toLowerCase();
+  
+  if (lower.includes('python') || lower.includes('pandas') || lower.includes('numpy')) {
+    detected.push({ skill: 'python', xp: 10 });
+  }
+  if (lower.includes('math') || lower.includes('statistics') || lower.includes('algebra')) {
+    detected.push({ skill: 'math', xp: 10 });
+  }
+  if (lower.includes('llm') || lower.includes('language model') || lower.includes('gpt') || lower.includes('ollama')) {
+    detected.push({ skill: 'llm', xp: 10 });
+  }
+  if (lower.includes('rag') || lower.includes('retrieval') || lower.includes('embedding')) {
+    detected.push({ skill: 'rag', xp: 10 });
+  }
+  if (lower.includes('n8n') || lower.includes('workflow') || lower.includes('automation')) {
+    detected.push({ skill: 'n8n', xp: 10 });
+  }
+  if (lower.includes('javascript') || lower.includes('node') || lower.includes('js')) {
+    detected.push({ skill: 'javascript', xp: 10 });
+  }
+  if (lower.includes('vector') || lower.includes('database') || lower.includes('pinecone')) {
+    detected.push({ skill: 'vectordb', xp: 10 });
+  }
+  if (lower.includes('api') || lower.includes('endpoint') || lower.includes('fetch')) {
+    detected.push({ skill: 'api', xp: 10 });
+  }
+  
+  return detected;
 }
 
 // Ask Ollama AI
@@ -93,10 +164,15 @@ async function showMenu() {
   
   // Get stats
   const notes = await loadNotes();
+  const skills = await loadSkills();
   const today = new Date().toDateString();
   const todayNotes = notes.filter(n => 
     new Date(n.date).toDateString() === today
   );
+  
+  // Calculate overall skill progress
+  const totalLevel = Object.values(skills).reduce((sum, skill) => sum + skill.level, 0);
+  const overallProgress = Math.floor((totalLevel / (Object.keys(skills).length * 100)) * 100);
   
   console.log('\n╔════════════════════════════════════════════╗');
   console.log('║   🤖 AI LEARNING COMPANION                 ║');
@@ -104,6 +180,7 @@ async function showMenu() {
   console.log('╠════════════════════════════════════════════╣');
   console.log('║                                            ║');
   console.log(`║   📊 Stats: ${notes.length} notes | Today: ${todayNotes.length}`.padEnd(45) + '║');
+  console.log(`║   🎯 Overall Progress: ${overallProgress}%`.padEnd(45) + '║');
   console.log('║                                            ║');
   console.log('║   What would you like to do?               ║');
   console.log('║                                            ║');
@@ -113,11 +190,13 @@ async function showMenu() {
   console.log('║   [4] 📊 Get AI summary                    ║');
   console.log('║   [5] 💬 Chat with AI directly             ║');
   console.log('║   [6] 🗑️  Delete a note                    ║');
+  console.log('║   [7] 🎯 View skill progress               ║');
+  console.log('║   [8] ⚡ Add skill XP manually             ║');
   console.log('║   [0] 👋 Exit                              ║');
   console.log('║                                            ║');
   console.log('╚════════════════════════════════════════════╝\n');
   
-  const choice = await prompt('Choose an option (0-6): ');
+  const choice = await prompt('Choose an option (0-8): ');
   return choice.trim();
 }
 
@@ -150,6 +229,113 @@ async function addNote() {
   await saveNotes(notes);
   
   console.log('\n✅ Note saved successfully!\n');
+  
+  // Auto-detect skills and add XP
+  const detectedSkills = detectSkills(content);
+  
+  if (detectedSkills.length > 0) {
+    console.log('🎯 Skills detected! Adding XP...\n');
+    
+    const skills = await loadSkills();
+    
+    for (const { skill, xp } of detectedSkills) {
+      if (skills[skill]) {
+        const oldLevel = skills[skill].level;
+        skills[skill].level = Math.min(skills[skill].level + xp, skills[skill].maxLevel);
+        
+        console.log(`   ${skills[skill].name} +${xp} XP (${oldLevel}% → ${skills[skill].level}%)`);
+      }
+    }
+    
+    await saveSkills(skills);
+    console.log('');
+  }
+  
+  await prompt('Press Enter to continue...');
+}
+
+// [7] View skill progress
+async function viewSkills() {
+  clearScreen();
+  const skills = await loadSkills();
+  
+  drawBox('🎯 YOUR SKILL PROGRESS');
+  console.log('\n');
+  
+  // Calculate overall progress
+  const totalLevel = Object.values(skills).reduce((sum, skill) => sum + skill.level, 0);
+  const totalMax = Object.values(skills).length * 100;
+  const overallProgress = Math.floor((totalLevel / totalMax) * 100);
+  
+  console.log(`📊 Overall Progress: ${createProgressBar(totalLevel, totalMax, 30)}\n`);
+  
+  // Group by category
+  const categories = {
+    ai: '🤖 AI & Machine Learning',
+    programming: '💻 Programming',
+    foundation: '📚 Foundations'
+  };
+  
+  for (const [catKey, catName] of Object.entries(categories)) {
+    console.log(`${catName}:`);
+    console.log('─'.repeat(60));
+    
+    for (const [key, skill] of Object.entries(skills)) {
+      if (skill.category === catKey) {
+        console.log(`${skill.name.padEnd(25)} ${createProgressBar(skill.level, skill.maxLevel, 20)}`);
+      }
+    }
+    console.log('');
+  }
+  
+  await prompt('Press Enter to continue...');
+}
+
+// [8] Add skill XP manually
+async function addSkillXP() {
+  clearScreen();
+  const skills = await loadSkills();
+  
+  drawBox('⚡ ADD SKILL XP');
+  console.log('\n');
+  
+  console.log('Available skills:\n');
+  Object.entries(skills).forEach(([key, skill]) => {
+    console.log(`  ${key.padEnd(12)} - ${skill.name}`);
+  });
+  
+  console.log('\n');
+  const skillKey = await prompt('Enter skill name (or "back"): ');
+  
+  if (skillKey.toLowerCase() === 'back' || !skillKey.trim()) {
+    return;
+  }
+  
+  if (!skills[skillKey]) {
+    console.log('\n❌ Skill not found!\n');
+    await prompt('Press Enter to continue...');
+    return;
+  }
+  
+  const xpStr = await prompt('How much XP to add? ');
+  const xp = parseInt(xpStr);
+  
+  if (isNaN(xp)) {
+    console.log('\n❌ Invalid number!\n');
+    await prompt('Press Enter to continue...');
+    return;
+  }
+  
+  const skill = skills[skillKey];
+  const oldLevel = skill.level;
+  skill.level = Math.min(skill.level + xp, skill.maxLevel);
+  
+  await saveSkills(skills);
+  
+  console.log(`\n✅ ${skill.name} increased!`);
+  console.log(`   ${oldLevel}% → ${skill.level}% (+${xp} XP)`);
+  console.log(`   ${createProgressBar(skill.level, skill.maxLevel, 20)}\n`);
+  
   await prompt('Press Enter to continue...');
 }
 
@@ -357,6 +543,12 @@ async function main() {
         break;
       case '6':
         await deleteNote();
+        break;
+      case '7':
+        await viewSkills();
+        break;
+      case '8':
+        await addSkillXP();
         break;
       case '0':
         clearScreen();
