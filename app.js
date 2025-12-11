@@ -203,7 +203,32 @@ async function saveNotes(notes) {
 async function loadSkills() {
   try {
     const data = await fs.readFile(SKILLS_FILE, 'utf-8');
-    return JSON.parse(data);
+    const skills = JSON.parse(data);
+    
+    // Migrate old format to new format (add milestones if missing)
+    let needsMigration = false;
+    for (const [key, skill] of Object.entries(skills)) {
+      if (!skill.milestones || !skill.completedMilestones) {
+        needsMigration = true;
+        // Add missing properties from DEFAULT_SKILLS
+        if (DEFAULT_SKILLS[key]) {
+          skills[key] = {
+            ...DEFAULT_SKILLS[key],
+            level: skill.level || 0, // Keep existing level
+            name: skill.name,
+            category: skill.category
+          };
+        }
+      }
+    }
+    
+    // Save migrated data
+    if (needsMigration) {
+      console.log('📦 Migrating skills to new format with milestones...\n');
+      await saveSkills(skills);
+    }
+    
+    return skills;
   } catch (error) {
     await saveSkills(DEFAULT_SKILLS);
     return DEFAULT_SKILLS;

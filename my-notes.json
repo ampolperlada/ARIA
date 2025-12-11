@@ -52,5 +52,11 @@
     "content": "\"Built a tool that scrapes websites and processes the data\"",
     "date": "2025-12-10T15:09:53.905Z",
     "tags": []
+  },
+  {
+    "id": 1765417180027,
+    "content": "Built a web scraper to collect data\" → Should detect: Python, APIs",
+    "date": "2025-12-11T01:39:40.027Z",
+    "tags": []
   }
 ]

@@ -1,7 +1,7 @@
 {
   "python": {
     "name": "🐍 Python",
-    "level": 20,
+    "level": 30,
     "maxLevel": 100,
     "category": "programming"
   },
@@ -43,7 +43,7 @@
   },
   "api": {
     "name": "🔌 APIs",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "programming"
   }
