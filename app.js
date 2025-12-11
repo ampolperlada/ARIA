@@ -570,6 +570,10 @@ async function manageMilestones() {
   // Show milestones for selected skill
   while (true) {
     clearScreen();
+    
+    // Add a small delay to ensure screen clears
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     drawBox(`${skill.name} MILESTONES`);
     console.log('\n');
     
@@ -606,9 +610,10 @@ async function manageMilestones() {
         if (!skill.completedMilestones.includes(level)) {
           skill.completedMilestones.push(level);
           skill.completedMilestones.sort((a, b) => a - b);
-          skill.level = Math.max(skill.level, level);
+          // Level should be the HIGHEST completed milestone, not the one just completed
+          skill.level = Math.max(...skill.completedMilestones);
           await saveSkills(skills);
-          console.log(`\n✅ Milestone completed! You are now at ${level}%\n`);
+          console.log(`\n✅ Milestone completed! You are now at ${skill.level}%\n`);
         } else {
           console.log('\n⚠️  This milestone is already completed!\n');
         }
