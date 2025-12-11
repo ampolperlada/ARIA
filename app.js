@@ -18,16 +18,160 @@ const SKILLS_FILE = 'my-skills.json';
 const OLLAMA_URL = 'http://localhost:11434/api/generate';
 const MODEL = 'llama3.2';
 
-// Default skills
+// Default skills with milestones
 const DEFAULT_SKILLS = {
-  python: { name: '🐍 Python', level: 0, maxLevel: 100, category: 'programming' },
-  math: { name: '📐 Math/Statistics', level: 0, maxLevel: 100, category: 'foundation' },
-  llm: { name: '🤖 LLM', level: 0, maxLevel: 100, category: 'ai' },
-  rag: { name: '📚 RAG', level: 0, maxLevel: 100, category: 'ai' },
-  n8n: { name: '⚙️ n8n/Workflows', level: 0, maxLevel: 100, category: 'ai' },
-  javascript: { name: '💻 JavaScript/Node.js', level: 0, maxLevel: 100, category: 'programming' },
-  vectordb: { name: '🗄️ Vector Databases', level: 0, maxLevel: 100, category: 'ai' },
-  api: { name: '🔌 APIs', level: 0, maxLevel: 100, category: 'programming' }
+  python: { 
+    name: '🐍 Python', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'programming',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Wrote first "Hello World" script', resource: 'Python.org tutorials' },
+      20: { title: 'Used variables, if/else, and loops', resource: 'Learn Python the Hard Way' },
+      30: { title: 'Created functions and imported modules', resource: 'Real Python' },
+      40: { title: 'Built a CLI tool or script', resource: 'Click library docs' },
+      50: { title: 'Worked with APIs (requests library)', resource: 'Requests documentation' },
+      60: { title: 'Used pandas/numpy for data analysis', resource: 'Python Data Science Handbook' },
+      70: { title: 'Read "Automate the Boring Stuff with Python"', resource: 'automatetheboringstuff.com' },
+      80: { title: 'Built a complete project (scraper, bot, app)', resource: 'Real Python Projects' },
+      90: { title: 'Contributed to open source Python project', resource: 'GitHub Explore' },
+      100: { title: 'Deployed production Python application', resource: 'Heroku/Railway docs' }
+    }
+  },
+  math: { 
+    name: '📐 Math/Statistics', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'foundation',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Learned basic algebra and equations', resource: 'Khan Academy Algebra' },
+      20: { title: 'Studied probability basics', resource: 'Khan Academy Probability' },
+      30: { title: 'Learned statistics fundamentals', resource: 'Statistics for Data Science' },
+      40: { title: 'Understood linear algebra basics', resource: '3Blue1Brown YouTube' },
+      50: { title: 'Learned calculus fundamentals', resource: 'Khan Academy Calculus' },
+      60: { title: 'Applied statistics to real data', resource: 'Think Stats book' },
+      70: { title: 'Read statistics/ML math book', resource: 'Mathematics for ML' },
+      80: { title: 'Understood advanced concepts (PCA, SVD)', resource: 'Stanford CS229' },
+      90: { title: 'Implemented algorithms from scratch', resource: 'Math for Programmers' },
+      100: { title: 'Can explain mathematical proofs', resource: 'MIT OpenCourseWare' }
+    }
+  },
+  llm: { 
+    name: '🤖 LLM', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'ai',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Used ChatGPT or similar AI tool', resource: 'OpenAI Playground' },
+      20: { title: 'Learned about prompting techniques', resource: 'Prompt Engineering Guide' },
+      30: { title: 'Installed and ran local LLM (Ollama)', resource: 'Ollama.com' },
+      40: { title: 'Built simple chatbot with API', resource: 'LangChain docs' },
+      50: { title: 'Understood transformers architecture', resource: 'Attention Is All You Need paper' },
+      60: { title: 'Experimented with prompt engineering', resource: 'Learn Prompting' },
+      70: { title: 'Read LLM research papers', resource: 'arXiv AI papers' },
+      80: { title: 'Fine-tuned a model or used embeddings', resource: 'HuggingFace tutorials' },
+      90: { title: 'Built production LLM application', resource: 'LangChain cookbook' },
+      100: { title: 'Contributed to LLM open source', resource: 'GitHub Transformers' }
+    }
+  },
+  rag: { 
+    name: '📚 RAG', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'ai',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Learned what RAG is', resource: 'RAG explanation articles' },
+      20: { title: 'Understood embeddings concept', resource: 'OpenAI Embeddings Guide' },
+      30: { title: 'Created first embeddings', resource: 'Sentence Transformers' },
+      40: { title: 'Built simple document Q&A', resource: 'LangChain RAG tutorial' },
+      50: { title: 'Used vector database', resource: 'Chroma/Pinecone docs' },
+      60: { title: 'Implemented semantic search', resource: 'FAISS library' },
+      70: { title: 'Optimized retrieval quality', resource: 'RAG best practices' },
+      80: { title: 'Built production RAG system', resource: 'LlamaIndex docs' },
+      90: { title: 'Experimented with advanced techniques', resource: 'RAG research papers' },
+      100: { title: 'Deployed RAG in real application', resource: 'Production RAG guides' }
+    }
+  },
+  n8n: { 
+    name: '⚙️ n8n/Workflows', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'ai',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Learned about workflow automation', resource: 'n8n.io introduction' },
+      20: { title: 'Installed n8n locally', resource: 'n8n installation guide' },
+      30: { title: 'Created first simple workflow', resource: 'n8n quickstart' },
+      40: { title: 'Connected multiple services', resource: 'n8n integrations' },
+      50: { title: 'Automated daily tasks', resource: 'n8n workflow examples' },
+      60: { title: 'Used webhooks and APIs', resource: 'n8n webhook docs' },
+      70: { title: 'Built complex multi-step workflows', resource: 'n8n advanced tutorials' },
+      80: { title: 'Integrated AI with workflows', resource: 'n8n + AI guides' },
+      90: { title: 'Created custom n8n nodes', resource: 'n8n development docs' },
+      100: { title: 'Run production workflows', resource: 'n8n cloud hosting' }
+    }
+  },
+  javascript: { 
+    name: '💻 JavaScript/Node.js', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'programming',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Wrote first JavaScript code', resource: 'JavaScript.info' },
+      20: { title: 'Used variables, functions, loops', resource: 'MDN Web Docs' },
+      30: { title: 'Learned ES6+ features', resource: 'ES6 for Everyone' },
+      40: { title: 'Built Node.js CLI tool', resource: 'Node.js docs' },
+      50: { title: 'Used async/await and promises', resource: 'JavaScript Promises Guide' },
+      60: { title: 'Built REST API with Express', resource: 'Express.js docs' },
+      70: { title: 'Worked with npm packages', resource: 'NPM documentation' },
+      80: { title: 'Built full-stack application', resource: 'Full Stack Open' },
+      90: { title: 'Learned React or Vue', resource: 'React docs' },
+      100: { title: 'Deployed production app', resource: 'Vercel/Netlify docs' }
+    }
+  },
+  vectordb: { 
+    name: '🗄️ Vector Databases', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'ai',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Learned what vector databases are', resource: 'Pinecone blog' },
+      20: { title: 'Understood vector similarity', resource: 'Cosine similarity guide' },
+      30: { title: 'Created first vectors', resource: 'Embeddings tutorial' },
+      40: { title: 'Stored vectors in database', resource: 'Chroma quickstart' },
+      50: { title: 'Performed similarity search', resource: 'Vector search guide' },
+      60: { title: 'Optimized search performance', resource: 'FAISS documentation' },
+      70: { title: 'Compared different vector DBs', resource: 'Vector DB comparison' },
+      80: { title: 'Built RAG with vector DB', resource: 'LangChain vector stores' },
+      90: { title: 'Scaled vector search', resource: 'Production vector DB' },
+      100: { title: 'Deployed production system', resource: 'Pinecone/Weaviate cloud' }
+    }
+  },
+  api: { 
+    name: '🔌 APIs', 
+    level: 0, 
+    maxLevel: 100, 
+    category: 'programming',
+    completedMilestones: [],
+    milestones: {
+      10: { title: 'Learned what APIs are', resource: 'REST API basics' },
+      20: { title: 'Made first API call with fetch', resource: 'Fetch API docs' },
+      30: { title: 'Used API keys and authentication', resource: 'API authentication guide' },
+      40: { title: 'Worked with JSON data', resource: 'Working with JSON' },
+      50: { title: 'Built simple REST API', resource: 'Express REST tutorial' },
+      60: { title: 'Handled errors and edge cases', resource: 'API error handling' },
+      70: { title: 'Used webhooks', resource: 'Webhooks explained' },
+      80: { title: 'Documented API with OpenAPI', resource: 'Swagger/OpenAPI' },
+      90: { title: 'Built production-ready API', resource: 'API design best practices' },
+      100: { title: 'Deployed and scaled API', resource: 'API deployment guide' }
+    }
+  }
 };
 
 // Create readline interface for user input
@@ -112,29 +256,35 @@ async function detectSkillsWithAI(content) {
 
 Learning Note: "${content}"
 
-Available Skills:
-- python: Python programming, pandas, numpy, data analysis, scripting
-- math: Mathematics, statistics, linear algebra, probability, calculus
-- llm: Large Language Models, GPT, Ollama, prompts, AI models
-- rag: Retrieval Augmented Generation, embeddings, vector search, document Q&A
-- n8n: Workflow automation, n8n tool, zapier, integrations
-- javascript: JavaScript, Node.js, async/await, ES6+, npm
-- vectordb: Vector databases, Pinecone, Chroma, Weaviate, similarity search
-- api: REST APIs, endpoints, fetch, HTTP requests, webhooks
+Available Skills and What Counts:
+- python: ANY Python programming (scripts, tools, automation, web scraping, data processing, bots, CLI tools, pandas, numpy)
+- math: Mathematics, statistics, linear algebra, probability, calculus, algorithms
+- llm: Large Language Models, GPT, Ollama, chatbots, AI models, neural networks, transformers
+- rag: Retrieval systems, embeddings, vector search, document Q&A, semantic search
+- n8n: Workflow automation, task automation, n8n, zapier, integrations
+- javascript: JavaScript, Node.js, async/await, ES6+, npm, Express, React
+- vectordb: Vector databases, Pinecone, Chroma, Weaviate, similarity search, embeddings storage
+- api: REST APIs, endpoints, fetch, HTTP requests, webhooks, API integration, web requests
 
-Instructions:
-1. Analyze what the person learned or practiced
-2. Return ONLY the skill IDs (separated by commas) that match
-3. If multiple skills apply, list all of them
-4. If no skills clearly match, return "none"
-5. Do NOT include explanations, just the skill IDs
+IMPORTANT RULES:
+1. Be GENEROUS with detection - if someone built something, they used the skill!
+2. "Built a tool" = programming skill (python or javascript)
+3. "Web scraper" = python + api
+4. "Chatbot" = llm
+5. "Automation" = n8n or python
+6. "Data processing" = python
+7. When in doubt, include the skill rather than exclude it
 
-Example responses:
-- "python,api" (if they learned Python and APIs)
-- "llm,rag" (if they learned about LLMs and RAG)
-- "none" (if no clear skills match)
+Return ONLY skill IDs separated by commas. NO explanations.
 
-Your response:`;
+Examples:
+- "Built a web scraper" → "python,api"
+- "Made a chatbot" → "llm"
+- "Automated my tasks" → "n8n,python"
+- "Learned about embeddings" → "rag,vectordb"
+- "Studied neural networks" → "llm,math"
+
+Your response (just skill IDs):`;
 
   try {
     const aiResponse = await askAI(prompt);
@@ -289,6 +439,7 @@ async function showMenu() {
     '║   [6]  Delete a note                       ║',
     '║   [7]  View skill progress                 ║',
     '║   [8]  Add skill XP manually               ║',
+    '║   [9]  Manage milestones                   ║',
     '║   [0]  Exit                                ║',
     '║                                            ║',
     '╚════════════════════════════════════════════╝'
@@ -304,7 +455,7 @@ async function showMenu() {
   }
   
   console.log('\n');
-  const choice = await prompt('Choose an option (0-8): ');
+  const choice = await prompt('Choose an option (0-9): ');
   return choice.trim();
 }
 
@@ -362,6 +513,109 @@ async function addNote() {
   }
   
   await prompt('Press Enter to continue...');
+}
+
+// [9] Manage milestones
+async function manageMilestones() {
+  clearScreen();
+  drawBox('🎯 MANAGE MILESTONES');
+  console.log('\n');
+  
+  const skills = await loadSkills();
+  
+  // Show all skills
+  console.log('Select a skill to manage:\n');
+  const skillKeys = Object.keys(skills);
+  skillKeys.forEach((key, index) => {
+    const skill = skills[key];
+    console.log(`[${index + 1}] ${skill.name} (${skill.level}%)`);
+  });
+  console.log('\n[0] Go back\n');
+  
+  const choice = await prompt('Choose a skill (0-' + skillKeys.length + '): ');
+  const skillIndex = parseInt(choice) - 1;
+  
+  if (choice === '0' || skillIndex < 0 || skillIndex >= skillKeys.length) {
+    return;
+  }
+  
+  const skillKey = skillKeys[skillIndex];
+  const skill = skills[skillKey];
+  
+  // Show milestones for selected skill
+  while (true) {
+    clearScreen();
+    drawBox(`${skill.name} MILESTONES`);
+    console.log('\n');
+    
+    const milestoneKeys = Object.keys(skill.milestones).map(Number).sort((a, b) => a - b);
+    
+    milestoneKeys.forEach(level => {
+      const milestone = skill.milestones[level];
+      const isCompleted = skill.completedMilestones.includes(level);
+      const isCurrent = skill.level === level;
+      
+      let checkbox = '□';
+      if (isCompleted) checkbox = '✅';
+      else if (isCurrent) checkbox = '☑️';
+      
+      console.log(`${checkbox} [${level}%] ${milestone.title}`);
+      console.log(`     📚 Resource: ${milestone.resource}\n`);
+    });
+    
+    console.log('\nOptions:');
+    console.log('[1] Complete a milestone');
+    console.log('[2] Uncomplete a milestone');
+    console.log('[0] Go back\n');
+    
+    const action = await prompt('Choose an action: ');
+    
+    if (action === '0') {
+      break;
+    } else if (action === '1') {
+      // Complete milestone
+      const levelStr = await prompt('Enter milestone level to complete (10-100): ');
+      const level = parseInt(levelStr);
+      
+      if (skill.milestones[level]) {
+        if (!skill.completedMilestones.includes(level)) {
+          skill.completedMilestones.push(level);
+          skill.completedMilestones.sort((a, b) => a - b);
+          skill.level = Math.max(skill.level, level);
+          await saveSkills(skills);
+          console.log(`\n✅ Milestone completed! You are now at ${level}%\n`);
+        } else {
+          console.log('\n⚠️  This milestone is already completed!\n');
+        }
+      } else {
+        console.log('\n❌ Invalid milestone level!\n');
+      }
+      await prompt('Press Enter to continue...');
+      
+    } else if (action === '2') {
+      // Uncomplete milestone
+      const levelStr = await prompt('Enter milestone level to uncomplete (10-100): ');
+      const level = parseInt(levelStr);
+      
+      if (skill.milestones[level]) {
+        const index = skill.completedMilestones.indexOf(level);
+        if (index > -1) {
+          skill.completedMilestones.splice(index, 1);
+          // Recalculate level to highest completed milestone
+          skill.level = skill.completedMilestones.length > 0 
+            ? Math.max(...skill.completedMilestones)
+            : 0;
+          await saveSkills(skills);
+          console.log(`\n✅ Milestone uncompleted! You are now at ${skill.level}%\n`);
+        } else {
+          console.log('\n⚠️  This milestone is not completed yet!\n');
+        }
+      } else {
+        console.log('\n❌ Invalid milestone level!\n');
+      }
+      await prompt('Press Enter to continue...');
+    }
+  }
 }
 
 // [7] View skill progress
@@ -660,6 +914,9 @@ async function main() {
       case '8':
         await addSkillXP();
         break;
+      case '9':
+        await manageMilestones();
+        break;
       case '0':
         clearScreen();
         console.log('\n Thanks for using ARIA!');
@@ -667,7 +924,7 @@ async function main() {
         rl.close();
         process.exit(0);
       default:
-        console.log('\n Invalid option! Please choose 0-8.\n');
+        console.log('\n Invalid option! Please choose 0-9.\n');
         await prompt('Press Enter to continue...');
     }
   }

@@ -13,7 +13,7 @@
   },
   "llm": {
     "name": "🤖 LLM",
-    "level": 10,
+    "level": 20,
     "maxLevel": 100,
     "category": "ai"
   },
