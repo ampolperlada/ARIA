@@ -42,7 +42,7 @@ if (!(Test-Path "node_modules")) {
 }
 
 Write-Host ""
-Write-Host "Starting app..." -ForegroundColor Green
+Write-Host " app..." -ForegroundColor Green
 Write-Host ""
 Start-Sleep -Seconds 1
 
