@@ -1077,7 +1077,19 @@ async function main() {
     console.log('   Start it with: ollama serve\n');
     await prompt('Press Enter to continue anyway...');
   } else {
-    console.log(' llm is ready\n');
+    console.log(' llm is ready');
+    
+    // Check if embedding model is available
+    console.log(' Checking RAG embedding model...');
+    const testEmbed = await generateEmbedding('test');
+    if (testEmbed) {
+      console.log(' ✅ RAG embeddings ready!\n');
+    } else {
+      console.log(' ⚠️  Embedding model not found. Download with:');
+      console.log('   ollama pull nomic-embed-text\n');
+      console.log(' 💡 You can still use ARIA, but semantic search will be disabled.\n');
+    }
+    
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
   
@@ -1123,7 +1135,7 @@ async function main() {
         rl.close();
         process.exit(0);
       default:
-        console.log('\n Invalid option! Please choose 0-9.\n');
+        console.log('\n Invalid option! Please choose 0-10.\n');
         await prompt('Press Enter to continue...');
     }
   }
