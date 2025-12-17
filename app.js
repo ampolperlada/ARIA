@@ -563,6 +563,7 @@ async function showMenu() {
     '║   [7]  View skill progress                 ║',
     '║   [8]  Add skill XP manually               ║',
     '║   [9]  Manage milestones                   ║',
+    '║   [10] 🔍 Semantic search (RAG)            ║',
     '║   [0]  Exit                                ║',
     '║                                            ║',
     '╚════════════════════════════════════════════╝'
