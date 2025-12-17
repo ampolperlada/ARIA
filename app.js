@@ -579,7 +579,7 @@ async function showMenu() {
   }
   
   console.log('\n');
-  const choice = await prompt('Choose an option (0-9): ');
+  const choice = await prompt('Choose an option (0-10): ');
   return choice.trim();
 }
 
@@ -637,6 +637,70 @@ async function addNote() {
     console.log('');
   } else {
     console.log('ℹ️  No specific skills detected in this note.\n');
+  }
+  
+  await prompt('Press Enter to continue...');
+}
+
+// [10] Semantic search with RAG
+async function semanticSearch() {
+  clearScreen();
+  drawBox('🔍 SEMANTIC SEARCH (RAG)');
+  console.log('\n');
+  console.log('Find notes by meaning, not just keywords!\n');
+  
+  const query = await prompt('What are you looking for? (or "back")\n> ');
+  
+  if (query.toLowerCase() === 'back' || !query.trim()) {
+    return;
+  }
+  
+  console.log('\n🔍 Searching with AI...\n');
+  
+  const results = await searchSimilarNotes(query, 5);
+  
+  if (!results || !results.documents || results.documents[0].length === 0) {
+    console.log('📭 No similar notes found!\n');
+    console.log('💡 Tip: Add more notes with embeddings enabled.\n');
+    await prompt('Press Enter to continue...');
+    return;
+  }
+  
+  console.log('📊 Similar Notes Found:\n');
+  
+  // Display results with similarity scores
+  const docs = results.documents[0];
+  const distances = results.distances[0];
+  
+  docs.forEach((doc, index) => {
+    // Convert distance to similarity percentage (lower distance = higher similarity)
+    const similarity = Math.max(0, (1 - distances[index]) * 100).toFixed(1);
+    
+    console.log(`${index + 1}. [${similarity}% match]`);
+    console.log(`   ${doc.substring(0, 100)}${doc.length > 100 ? '...' : ''}\n`);
+  });
+  
+  console.log('\n💡 These notes are semantically similar to your query!\n');
+  
+  // Ask if they want AI to summarize
+  const summarize = await prompt('Want AI to answer based on these notes? (yes/no): ');
+  
+  if (summarize.toLowerCase() === 'yes' || summarize.toLowerCase() === 'y') {
+    console.log('\n🤖 ARIA is analyzing...\n');
+    
+    const context = docs.join('\n- ');
+    const prompt_text = `Based on these relevant notes:
+- ${context}
+
+Question: ${query}
+
+Please provide a helpful answer based ONLY on the notes above.`;
+
+    const answer = await askAI(prompt_text);
+    
+    console.log('💡 ARIA\'s Answer:\n');
+    console.log(answer);
+    console.log('\n');
   }
   
   await prompt('Press Enter to continue...');
@@ -1048,6 +1112,9 @@ async function main() {
         break;
       case '9':
         await manageMilestones();
+        break;
+      case '10':
+        await semanticSearch();
         break;
       case '0':
         clearScreen();
