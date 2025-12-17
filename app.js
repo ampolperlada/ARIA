@@ -17,7 +17,12 @@ import { ChromaClient } from 'chromadb';
 const NOTES_FILE = 'my-notes.json';
 const SKILLS_FILE = 'my-skills.json';
 const OLLAMA_URL = 'http://localhost:11434/api/generate';
+const OLLAMA_EMBED_URL = 'http://localhost:11434/api/embeddings';
 const MODEL = 'llama3.2';
+const EMBED_MODEL = 'nomic-embed-text'; // Ollama embedding model
+
+// Initialize Chroma client
+const chromaClient = new ChromaClient();
 
 // Default skills with milestones
 const DEFAULT_SKILLS = {
@@ -271,6 +276,98 @@ async function askAI(prompt) {
 }
 
 // ============================================================================
+// PHASE 3: RAG FUNCTIONS (Vector Database)
+// ============================================================================
+
+// Generate embedding for text using Ollama
+async function generateEmbedding(text) {
+  try {
+    const response = await fetch(OLLAMA_EMBED_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: EMBED_MODEL,
+        prompt: text
+      })
+    });
+    
+    const data = await response.json();
+    return data.embedding;
+  } catch (error) {
+    console.log(`⚠️  Embedding failed: ${error.message}`);
+    return null;
+  }
+}
+
+// Initialize or get Chroma collection for notes
+async function getNotesCollection() {
+  try {
+    // Try to get existing collection
+    const collection = await chromaClient.getOrCreateCollection({
+      name: 'aria_notes',
+      metadata: { description: 'ARIA learning notes with embeddings' }
+    });
+    return collection;
+  } catch (error) {
+    console.log(`⚠️  Chroma error: ${error.message}`);
+    return null;
+  }
+}
+
+// Add note to vector database
+async function addNoteToVectorDB(noteId, content) {
+  try {
+    console.log('📊 Creating embedding for note...');
+    const embedding = await generateEmbedding(content);
+    
+    if (!embedding) {
+      console.log('⚠️  Skipping vector storage (embedding failed)\n');
+      return false;
+    }
+    
+    const collection = await getNotesCollection();
+    if (!collection) {
+      console.log('⚠️  Skipping vector storage (Chroma unavailable)\n');
+      return false;
+    }
+    
+    await collection.add({
+      ids: [noteId.toString()],
+      embeddings: [embedding],
+      documents: [content],
+      metadatas: [{ timestamp: new Date().toISOString() }]
+    });
+    
+    console.log('✅ Note stored in vector database!\n');
+    return true;
+  } catch (error) {
+    console.log(`⚠️  Vector storage failed: ${error.message}\n`);
+    return false;
+  }
+}
+
+// Search similar notes using semantic search
+async function searchSimilarNotes(query, topK = 5) {
+  try {
+    const embedding = await generateEmbedding(query);
+    if (!embedding) return null;
+    
+    const collection = await getNotesCollection();
+    if (!collection) return null;
+    
+    const results = await collection.query({
+      queryEmbeddings: [embedding],
+      nResults: topK
+    });
+    
+    return results;
+  } catch (error) {
+    console.log(`⚠️  Search failed: ${error.message}`);
+    return null;
+  }
+}
+
+// ============================================================================
 // OPTION A: SMART AI SKILL DETECTION
 // ============================================================================
 
@@ -514,6 +611,9 @@ async function addNote() {
   await saveNotes(notes);
   
   console.log('\n✅ Note saved successfully!\n');
+  
+  // PHASE 3: Add to vector database for RAG
+  await addNoteToVectorDB(newNote.id, newNote.content);
   
   // OPTION A: Use AI-powered skill detection
   const detectedSkills = await detectSkillsWithAI(content);
