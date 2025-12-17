@@ -8,6 +8,7 @@
 import readline from 'readline';
 import fs from 'fs/promises';
 import fetch from 'node-fetch';
+import { ChromaClient } from 'chromadb';
 
 // ============================================================================
 // CONFIGURATION
@@ -451,8 +452,8 @@ async function showMenu() {
     '║   Your Offline AI Assistant                ║',
     '╠════════════════════════════════════════════╣',
     '║                                            ║',
-    `║    Stats: ${notes.length} notes | Today: ${todayNotes.length}                      ║`,
-    `║    Overall Progress: ${overallProgress}%                    ║`,
+    `║   📊 Stats: ${notes.length} notes | Today: ${todayNotes.length}                      ║`,
+    `║   🎯 Overall Progress: ${overallProgress}%                    ║`,
     '║                                            ║',
     '║   What would you like to do?               ║',
     '║                                            ║',
