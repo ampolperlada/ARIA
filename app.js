@@ -299,12 +299,32 @@ async function generateEmbedding(text) {
   }
 }
 
+// Custom embedding function for Chroma
+class OllamaEmbeddingFunction {
+  async generate(texts) {
+    const embeddings = [];
+    for (const text of texts) {
+      const embedding = await generateEmbedding(text);
+      if (embedding) {
+        embeddings.push(embedding);
+      } else {
+        embeddings.push(Array(768).fill(0)); // Fallback: zero vector
+      }
+    }
+    return embeddings;
+  }
+}
+
 // Initialize or get Chroma collection for notes
 async function getNotesCollection() {
   try {
+    // Create custom embedding function
+    const embeddingFunction = new OllamaEmbeddingFunction();
+    
     // Try to get existing collection
     const collection = await chromaClient.getOrCreateCollection({
       name: 'aria_notes',
+      embeddingFunction: embeddingFunction,
       metadata: { description: 'ARIA learning notes with embeddings' }
     });
     return collection;

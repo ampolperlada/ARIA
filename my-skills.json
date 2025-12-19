@@ -1,7 +1,7 @@
 {
   "python": {
     "name": "🐍 Python",
-    "level": 30,
+    "level": 40,
     "maxLevel": 100,
     "category": "programming",
     "completedMilestones": [
@@ -52,7 +52,7 @@
   },
   "math": {
     "name": "📐 Math/Statistics",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "foundation",
     "completedMilestones": [],
@@ -101,7 +101,7 @@
   },
   "llm": {
     "name": "🤖 LLM",
-    "level": 20,
+    "level": 40,
     "maxLevel": 100,
     "category": "ai",
     "completedMilestones": [],
@@ -150,7 +150,7 @@
   },
   "rag": {
     "name": "📚 RAG",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "ai",
     "completedMilestones": [],
@@ -199,7 +199,7 @@
   },
   "n8n": {
     "name": "⚙️ n8n/Workflows",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "ai",
     "completedMilestones": [],
@@ -297,7 +297,7 @@
   },
   "vectordb": {
     "name": "🗄️ Vector Databases",
-    "level": 0,
+    "level": 10,
     "maxLevel": 100,
     "category": "ai",
     "completedMilestones": [],
@@ -346,7 +346,7 @@
   },
   "api": {
     "name": "🔌 APIs",
-    "level": 10,
+    "level": 20,
     "maxLevel": 100,
     "category": "programming",
     "completedMilestones": [],
